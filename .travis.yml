@@ -1,0 +1,28 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t mperrault/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true mperrault/react-test npm test
+
+after_success:
+  - docker build -t mperrault/multi-client ./client
+  - docker build -t mperrault/multi-nginx ./nginx
+  - docker build -t mperrault/multi-server ./server
+  - docker build -t mperrault/multi-worker ./worker
+
+# login in to the docker CLI
+
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# push to docker hub
+- docker push  mperrault/multi-client
+- docker push mperrault/multi-nginx
+- docker push mperrault/multi-server
+- docker push mperrault/multi-worker
+
