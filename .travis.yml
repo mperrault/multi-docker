@@ -25,4 +25,5 @@ after_success:
 - docker push mperrault/multi-nginx
 - docker push mperrault/multi-server
 - docker push mperrault/multi-worker
+# done
 
